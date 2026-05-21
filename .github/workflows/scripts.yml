@@ -1,0 +1,18 @@
+# Checks scripts.
+name: scripts
+on:
+  pull_request:
+  push:
+permissions: read-all
+jobs:
+  run_scripts_windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Generate test data
+      run: |
+        .\generate-specimens-windows.bat
+    - uses: actions/upload-artifact@v7
+      with:
+        name: specimens-windows
+        path: specimens/*/*.vhd
