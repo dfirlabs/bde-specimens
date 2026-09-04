@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v6
     - name: Generate test data
       run: |
-        .\generate-specimens-windows.bat
+        .\generate-specimens-windows.ps1
     - uses: actions/upload-artifact@v7
       with:
         name: specimens-windows
