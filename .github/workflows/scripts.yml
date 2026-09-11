@@ -12,7 +12,9 @@ jobs:
     - name: Generate test data
       run: |
         .\generate-specimens-windows.ps1
+        .\generate-specimens-hyperv.ps1
+        .\generate-specimens-with-pattern-fill.ps1
     - uses: actions/upload-artifact@v7
       with:
         name: specimens-windows
-        path: specimens/*/*.vhd
+        path: specimens/*
