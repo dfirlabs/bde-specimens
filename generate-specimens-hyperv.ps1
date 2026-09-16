@@ -4,21 +4,20 @@
 . .\shared_windows.ps1
 
 $ErrorActionPreference = "Stop"
+$SpecimensPath = "specimens"
 
-if (-not (Test-Path "specimens")) {
-   New-Item -ItemType Directory -Path "specimens" | Out-Null
+if (-not (Test-Path "${SpecimensPath}")) {
+   New-Item -ItemType Directory -Path "${SpecimensPath}" | Out-Null
 }
 
-$UnitSize = 4096
 $ImageSize = 256MB
-$DriveLetter = "X"
 
 $SecurePassword = ConvertTo-SecureString "BDEtest1" -AsPlainText -Force
 $SecurePin = ConvertTo-SecureString "1234" -AsPlainText -Force
 
 # Create an AES-128-CBC encrypted BDE image with NTFS using VHDX with sector sizes of logical 512 and physical 4096
 $ImageName = "bde_aes128cbc_ntfs_l512_p4096.vhdx"
-$ImageFullPath = "${Pwd}\specimens\${ImageName}"
+$ImageFullPath = "${Pwd}\${SpecimensPath}\${ImageName}"
 
 Write-Host "Creating: ${ImageName}" -foreground Yellow
 
@@ -32,15 +31,15 @@ New-Partition -DiskNumber ${VirtualDisk}.Number -UseMaximumSize -DriveLetter X
 
 Format-Volume -DriveLetter X -FileSystem NTFS -Confirm:$False -Force
 
-CreateTestFileEntriesExtended -DriveLetter $DriveLetter
+CreateTestFileEntriesExtended -DriveLetter "X"
    
-Enable-BitLocker -MountPoint "${DriveLetter}:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
+Enable-BitLocker -MountPoint "X:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
 
 Dismount-VHD -Path ${ImageFullPath}
 
 # Create an AES-128-CBC encrypted BDE image with NTFS using VHDX with sector sizes of logical 4096 and physical 4096
 $ImageName = "bde_aes128cbc_ntfs_l4096_p4096.vhdx"
-$ImageFullPath = "${Pwd}\specimens\${ImageName}"
+$ImageFullPath = "${Pwd}\${SpecimensPath}\${ImageName}"
 
 Write-Host "Creating: ${ImageName}" -foreground Yellow
 
@@ -54,15 +53,15 @@ New-Partition -DiskNumber ${VirtualDisk}.Number -UseMaximumSize -DriveLetter X
 
 Format-Volume -DriveLetter X -FileSystem NTFS -Confirm:$False -Force
 
-CreateTestFileEntriesExtended -DriveLetter $DriveLetter
+CreateTestFileEntriesExtended -DriveLetter "X"
    
-Enable-BitLocker -MountPoint "${DriveLetter}:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
+Enable-BitLocker -MountPoint "X:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
 
 Dismount-VHD -Path ${ImageFullPath}
 
 # Create an AES-128-CBC encrypted BDE image with exFAT using VHDX with sector sizes of logical 512 and physical 4096
 $ImageName = "bde_aes128cbc_exfat_l512_p4096.vhdx"
-$ImageFullPath = "${Pwd}\specimens\${ImageName}"
+$ImageFullPath = "${Pwd}\${SpecimensPath}\${ImageName}"
 
 Write-Host "Creating: ${ImageName}" -foreground Yellow
 
@@ -76,15 +75,15 @@ New-Partition -DiskNumber ${VirtualDisk}.Number -UseMaximumSize -DriveLetter X
 
 Format-Volume -DriveLetter X -FileSystem exFAT -Confirm:$False -Force
 
-CreateTestFileEntries -DriveLetter ${DriveLetter}
+CreateTestFileEntries -DriveLetter "X"
    
-Enable-BitLocker -MountPoint "${DriveLetter}:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
+Enable-BitLocker -MountPoint "X:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
 
 Dismount-VHD -Path ${ImageFullPath}
 
 # Create an AES-128-CBC encrypted BDE image with exFAT using VHDX with sector sizes of logical 4096 and physical 4096
 $ImageName = "bde_aes128cbc_exfat_l4096_p4096.vhdx"
-$ImageFullPath = "${Pwd}\specimens\${ImageName}"
+$ImageFullPath = "${Pwd}\${SpecimensPath}\${ImageName}"
 
 Write-Host "Creating: ${ImageName}" -foreground Yellow
 
@@ -98,8 +97,8 @@ New-Partition -DiskNumber ${VirtualDisk}.Number -UseMaximumSize -DriveLetter X
 
 Format-Volume -DriveLetter X -FileSystem exFAT -Confirm:$False -Force
 
-CreateTestFileEntries -DriveLetter ${DriveLetter}
+CreateTestFileEntries -DriveLetter "X"
    
-Enable-BitLocker -MountPoint "${DriveLetter}:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
+Enable-BitLocker -MountPoint "X:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} | Out-Null
 
 Dismount-VHD -Path ${ImageFullPath}

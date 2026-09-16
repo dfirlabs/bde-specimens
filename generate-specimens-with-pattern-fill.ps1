@@ -4,33 +4,32 @@
 . .\shared_windows.ps1
 
 $ErrorActionPreference = "Stop"
+$SpecimensPath = "specimens"
 
-if (-not (Test-Path "specimens")) {
-   New-Item -ItemType Directory -Path "specimens" | Out-Null
+if (-not (Test-Path "${SpecimensPath}")) {
+   New-Item -ItemType Directory -Path "${SpecimensPath}" | Out-Null
 }
 
 $BytesPerSector = 512
-$UnitSize = 4096
 $ImageSize = 64
-$DriveLetter = "X"
 
 $SecurePassword = ConvertTo-SecureString "BDEtest1" -AsPlainText -Force
 $SecurePin = ConvertTo-SecureString "1234" -AsPlainText -Force
 
 # Create an AES-128-CBC encrypted BDE Used Space Only image with NTFS.
 $ImageName = "bde_pattern_fill.vhd"
-$ImageFullPath = "${Pwd}\specimens\${ImageName}"
+$ImageFullPath = "${Pwd}\${SpecimensPath}\${ImageName}"
 
 Write-Host "Creating: ${ImageName}" -foreground Yellow
 
-CreateAndMountVhd -ImageFullPath ${ImageFullPath} -ImageSize ${ImageSize} -ImageType "fixed" -FileSystem "ntfs"
+CreateAndMountVhd -DriveLetter "X" -FileSystem "ntfs" -ImageFullPath ${ImageFullPath} -ImageSize ${ImageSize} -ImageType "fixed"
 
-$DriveInfo = Get-PSDrive -Name ${DriveLetter}
+$DriveInfo = Get-PSDrive -Name "X"
 $FreeSpaceBytes = ${DriveInfo}.Free
 
 # Fill the free space with patterns, this is to observe the behavior of the BDE relocation log.
 if (${FreeSpaceBytes} -gt 0) {
-    $TempFilePath = Join-Path "${DriveLetter}:\" "sector_fill.tmp"
+    $TempFilePath = Join-Path "X:\" "sector_fill.tmp"
     
     $BufferSize = 4 * 1024 * 1024
     $Buffer = New-Object Byte[] $BufferSize
@@ -65,8 +64,8 @@ if (${FreeSpaceBytes} -gt 0) {
     }
 }
 
-CreateTestFileEntriesExtended -DriveLetter ${DriveLetter}
+CreateTestFileEntriesExtended -DriveLetter "X"
 
-Enable-BitLocker -MountPoint "${DriveLetter}:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} -UsedSpaceOnly | Out-Null
+Enable-BitLocker -MountPoint "X:" -EncryptionMethod Aes128 -PasswordProtector -Password ${SecurePassword} -UsedSpaceOnly | Out-Null
 
 UnmountVhd -ImageFullPath ${ImageFullPath}

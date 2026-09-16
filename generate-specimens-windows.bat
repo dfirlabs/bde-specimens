@@ -281,6 +281,9 @@ copy LICENSE %driveletter%:\testdir1\TestFile2
 rem Create a file with a long filename
 type nul >> "%driveletter%:\My long, very long file name, so very long"
 
+rem Create a hard link to a file
+mklink /H %driveletter%:\file_hardlink1 %driveletter%:\testdir1\testfile1
+
 rem Create a symbolic link to a file
 mklink %driveletter%:\file_symboliclink1 %driveletter%:\testdir1\testfile1
 

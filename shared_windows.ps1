@@ -45,6 +45,9 @@ function CreateTestFileEntriesExtended {
     )
     CreateTestFileEntries ${DriveLetter}
 
+    # Create a hard link to a file
+    New-Item -ItemType HardLink -Path "${driveletter}:\file_hardlink1" -Target "${driveletter}:\testdir1\testfile1"
+
     # Create a symbolic link to a file
     New-Item -ItemType SymbolicLink -Path "${DriveLetter}:\file_symboliclink1" -Target "${DriveLetter}:\testdir1\testfile1" -Force
 
@@ -76,16 +79,19 @@ function CreateTestFileEntriesExtended {
 function CreateAndMountVhd {
     param (
         [Parameter(Mandatory=$true)]
+        [string]$DriveLetter,
+
+        [Parameter(Mandatory=$true)]
+        [string]$FileSystem,
+
+        [Parameter(Mandatory=$true)]
         [string]$ImageFullPath,
 
         [Parameter(Mandatory=$true)]
         [int]$ImageSize,
 
         [Parameter(Mandatory=$true)]
-        [string]$ImageType,
-
-        [Parameter(Mandatory=$true)]
-        [string]$FileSystem
+        [string]$ImageType
     )
     $DiskpartScript = Join-Path $env:TEMP "CreateVHD.diskpart"
 
@@ -96,7 +102,7 @@ attach vdisk
 convert mbr
 create partition primary
 format fs=${FileSystem} label="TestVolume" unit=4096 quick
-assign letter=x
+assign letter=${DriveLetter}
 "@ | Out-File -FilePath ${DiskpartScript} -Encoding ascii
 
     diskpart /s ${DiskpartScript}
